@@ -1,0 +1,2 @@
+# Live-check and showcase scripts are tooling, not the plugin: keep them out of GitHub's language stats.
+test/obsidian/*.mjs linguist-detectable=false

@@ -1,0 +1,68 @@
+.customizer .customizer-group { border-top: 1px solid var(--background-modifier-border); padding: 0.3em 0; }
+.customizer .customizer-group .customizer-group { margin: 0.5em 0 0.5em 0.5em; padding: 0.3em 0.8em; border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); background: var(--background-secondary); }
+.customizer summary { cursor: pointer; font-weight: var(--font-semibold); padding: 0.4em 0; }
+.customizer .customizer-changed { border-left: 3px solid var(--interactive-accent); padding-left: 0.6em; }
+
+/* Color picker (same look as MindmapMate's and FolderMate's): a swatch button opens a popover under the setting. */
+.cz-color { position: relative; }
+.cz-color .cz-swatch { flex: none; width: 22px; height: 22px; min-width: 22px; padding: 0; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--background-modifier-border); }
+.cz-pop {
+  position: absolute; top: calc(100% + 8px); right: 0; z-index: 10; padding: 12px;
+  border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m);
+  background: var(--background-primary); box-shadow: var(--shadow-l);
+}
+.cz-hsl { display: flex; flex-direction: column; gap: 10px; width: 216px; }
+.cz-row { display: flex; align-items: center; gap: 4px; }
+.cz-color .cz-hex { width: 96px; font-family: var(--font-monospace); }
+input.cz-track.cz-track { -webkit-appearance: none; appearance: none; width: 100%; height: 12px; margin: 0; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--background-modifier-border); }
+/* Obsidian sizes and lifts its slider knob through variables (meant for its 6px track); set them here so its white knob sits centred
+   on the 12px track, also while hovered or dragged. */
+input.cz-track.cz-track {
+  --slider-thumb-width: 18px; --slider-thumb-height: 18px; --slider-thumb-width-active: 18px; --slider-thumb-height-active: 18px;
+  --slider-thumb-y: -3px; --slider-thumb-y-active: -3px; --slider-thumb-radius: 50%;
+}
+input.cz-track.cz-track::-webkit-slider-runnable-track { background: transparent; height: 12px; }
+input.cz-track.cz-track::-webkit-slider-thumb { box-sizing: border-box; cursor: pointer; }
+.cz-color .cz-reset { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; margin-left: auto; background: transparent; box-shadow: none; color: var(--text-muted); cursor: pointer; }
+.cz-color .cz-reset:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
+
+/* Preferences: About block (same layout as LevelMate, FolderMate and MindmapMate). */
+.customizer-about { margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--background-modifier-border); }
+.customizer-about-name { font-size: var(--font-ui-large); font-weight: var(--font-bold); color: var(--text-normal); }
+.customizer-about-title { color: var(--text-faint); font-size: var(--font-ui-smaller); }
+.customizer-about p { margin: 6px 0 10px; color: var(--text-muted); }
+.customizer-about-tip { text-align: left; color: var(--text-muted); margin: 1.2em 0 10px; }
+.customizer-about-footer { display: flex; align-items: center; justify-content: flex-end; gap: 10px; color: var(--text-faint); font-size: var(--font-ui-small); }
+.customizer-coffee { display: inline-block; line-height: 0; }
+.customizer-coffee img { height: 30px; width: auto; }
+
+/* "No color" swatch (a transparent default): a checkerboard instead of a misleading black. */
+.cz-color .cz-swatch.cz-none { background: repeating-conic-gradient(var(--background-modifier-border) 0% 25%, var(--background-primary) 0% 50%) 50% / 10px 10px; }
+
+/* Palette sliders drawn like the picker's: a gradient track and the value beside it. */
+.cz-slider { gap: 8px; }
+/* Every palette track the same length, whatever the label beside it (input.cz-track.cz-track sets 100%, so this must outrank it). */
+.cz-slider input.cz-track.cz-track { flex: none; width: 200px; }
+.cz-slider .cz-value { min-width: 3ch; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-muted); }
+
+/* Icon before every setting's name. */
+.customizer .cz-icon { display: inline-flex; vertical-align: -3px; margin-right: 6px; color: var(--text-muted); }
+.customizer .cz-icon svg { width: 16px; height: 16px; }
+
+/* Heading style strip: case dropdown, then italic and underline as icon toggles side by side. */
+.customizer .cz-strip { gap: 4px; }
+.customizer .cz-strip select { margin-right: 6px; }
+.customizer .cz-toggle { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; padding: 0; color: var(--text-muted); background: var(--interactive-normal); box-shadow: var(--input-shadow); }
+.customizer .cz-toggle.is-active { color: var(--text-on-accent); background: var(--interactive-accent); }
+.customizer .cz-toggle svg { width: 16px; height: 16px; }
+
+/* Section headings inside a box (Color, Shape, Spacing...). */
+.customizer .cz-sec { margin: 14px 0 2px; font-size: var(--font-ui-smaller); font-weight: var(--font-semibold); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Number box beside a slider, and the main group headers in capitals. */
+.customizer input.cz-num { width: 72px; text-align: right; font-variant-numeric: tabular-nums; }
+.customizer details.cz-main > summary { text-transform: uppercase; letter-spacing: 0.04em; }
+.customizer .setting-item-control > .slider-value { display: none; } /* the number box replaces it (it would show the slider's clamped value) */
+
+/* Declarative settings: the About block, Presets and each main group are `render` rows; drop the row's own flex layout and padding. */
+.customizer .setting-item.cz-host { display: block; padding: 0; border: none; background: none; }

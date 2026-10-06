@@ -1,0 +1,29 @@
+{
+  "name": "stylemate",
+  "version": "1.0.1",
+  "private": true,
+  "description": "Style Obsidian headings, text, lists, checkboxes and callouts from settings, with a live sample note",
+  "type": "module",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc --noEmit && node esbuild.config.mjs production && node scripts/scan-bundle.mjs",
+    "test": "vitest run",
+    "obsidian:check": "node test/obsidian/check.mjs",
+    "lint": "eslint src",
+    "ship": "npm run build && node scripts/ship.mjs",
+    "showcase": "node test/obsidian/showcase.mjs"
+  },
+  "author": "Droid",
+  "license": "MIT",
+  "devDependencies": {
+    "@codemirror/state": "6.5.0",
+    "@codemirror/view": "6.38.6",
+    "@types/node": "26.6.2",
+    "esbuild": "0.28.2",
+    "eslint": "10.11.0",
+    "obsidian": "1.13.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.70.0",
+    "vitest": "5.0.1"
+  }
+}
