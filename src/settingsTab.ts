@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting, setIcon, setTooltip, type SettingDefinitionItem, type SliderComponent, type TextComponent, type DropdownComponent, type ToggleComponent } from 'obsidian'
+import { App, PluginSettingTab, Setting, setIcon, setTooltip, type SettingDefinition, type SettingDefinitionItem, type SliderComponent, type TextComponent, type DropdownComponent, type ToggleComponent } from 'obsidian'
 import { addColorPicker, addTrackSlider } from './colorPicker'
 import { COFFEE_BUTTON, COFFEE_URL } from './coffeeButton'
 import { DEFS, GROUPS, type Def } from './core/schema'
@@ -64,10 +64,13 @@ export class StyleMateTab extends PluginSettingTab {
   getSettingDefinitions(): SettingDefinitionItem[] {
     this.syncs.clear(); this.follow.clear()
     const { plugin } = this
-    const top = (name: string, ic: string, desc: string, build: (s: Setting) => unknown): SettingDefinitionItem =>
+    const top = (name: string, ic: string, desc: string, build: (s: Setting) => unknown): SettingDefinition =>
       ({ name, desc, render: s => { icon(s.setName(name).setDesc(desc), ic); build(s) } })
+    // Cards (user, 2026-10-09): About in its own card; the top settings each a card inside one larger card; each main group one larger
+    // fold-out card with its rows and boxes as cards inside, and its Reset button on the big card itself.
     return [
-      { name: 'StyleMate', searchable: false, render: s => this.header(s) },
+      { type: 'group', cls: 'cz-about-group', items: [{ name: 'StyleMate', searchable: false, render: s => this.header(s) }] },
+      { type: 'group', cls: 'cz-cards', items: [
       top('Live sample note', 'file-text', 'Opens a sample note (Live Preview and Reading view side by side). Every control below changes it as you move it.',
         s => s.addButton(b => b.setButtonText('Open sample note').setCta().onClick(() => void openPreview(this.app)))),
       top('Enable StyleMate', 'power', 'Off shows Obsidian as it was; your settings are kept.',
@@ -80,9 +83,9 @@ export class StyleMateTab extends PluginSettingTab {
       top('Export as CSS', 'download', 'Your changes as a CSS snippet: save it to this vault\'s snippets folder (turn it on under Appearance > CSS snippets), or copy it to share.',
         s => s.addButton(b => b.setButtonText('Save snippet').onClick(() => void plugin.exportSnippet()))
           .addButton(b => b.setButtonText('Copy CSS').onClick(() => void plugin.copyCss(b.buttonEl.win)))),
-      { name: 'Presets', aliases: ['save preset', 'load preset'], render: s => this.presets(s) },
-      ...GROUPS.map((g): SettingDefinitionItem => ({ name: g, aliases: [...new Set(DEFS.filter(d => d.group === g).flatMap(d => [d.label, d.sub ?? '']).filter(Boolean))],
-        render: s => { s.settingEl.empty(); s.settingEl.addClass('cz-host'); this.group(s.settingEl, g) } })),
+      { name: 'Presets', aliases: ['save preset', 'load preset'], render: s => this.presets(s) }] },
+      ...GROUPS.map((g): SettingDefinitionItem => ({ type: 'group', cls: 'cz-cards', items: [{ name: g, aliases: [...new Set(DEFS.filter(d => d.group === g).flatMap(d => [d.label, d.sub ?? '']).filter(Boolean))],
+        render: s => { s.settingEl.empty(); s.settingEl.addClass('cz-host'); this.group(s.settingEl, g) } }] })),
     ]
   }
 
@@ -139,9 +142,9 @@ export class StyleMateTab extends PluginSettingTab {
       const sec = [...BOXED].find(b => key.endsWith(b))
       if (!sec) continue
       const defs = DEFS.filter(x => x.group === g && x.sub! + x.sec === key)
-      new Setting(el).setName('').addButton(b => b.setButtonText(`Reset ${sec.toLowerCase()}`).onClick(() => { defs.forEach(x => plugin.clear(x)); this.syncs.get(g)?.forEach(f => f()) }))
+      new Setting(el).setName('').setClass('cz-reset-row').addButton(b => b.setButtonText(`Reset ${sec.toLowerCase()}`).onClick(() => { defs.forEach(x => plugin.clear(x)); this.syncs.get(g)?.forEach(f => f()) }))
     }
-    new Setting(box).setName('').addButton(b => b.setButtonText(`Reset ${g}`).onClick(() => {
+    new Setting(box).setName('').setClass('cz-reset-row').addButton(b => b.setButtonText(`Reset ${g}`).onClick(() => {
       if (g === 'Headings') plugin.clearPalette() // else the heading colors would go back to the palette
       DEFS.filter(x => x.group === g).forEach(x => plugin.clear(x)); this.syncs.get(g)?.forEach(f => f())
     }))

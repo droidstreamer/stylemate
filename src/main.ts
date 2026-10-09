@@ -32,7 +32,6 @@ export default class StyleMate extends Plugin {
     this.register(() => { window.open = open })
     this.registerEditorExtension(otherLinks)
     this.addSettingTab(new StyleMateTab(this.app, this))
-    this.addRibbonIcon('paintbrush', 'StyleMate: open sample note', () => void openPreview(this.app))
     this.addCommand({ id: 'open-preview', name: 'Open sample note', callback: () => void openPreview(this.app) })
     this.addCommand({ id: 'toggle', name: 'Turn customizations on/off', callback: () => { this.settings.enabled = !this.settings.enabled; this.apply(); this.save() } })
   }

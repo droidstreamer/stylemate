@@ -12,13 +12,10 @@ console.log('StyleMate', await ev(`return app.plugins.plugins.stylemate.manifest
 await ev(`await app.commands.executeCommandById('stylemate:open-preview'); await new Promise(r => setTimeout(r, 1500)); return 1`)
 const s = await openSettings()
 
-// --- 1. one background: Obsidian's settings card is see-through, rows line up with the About block
-const bg = await s.ev(`const c = e => getComputedStyle(e).backgroundColor, items = document.querySelector('.customizer .setting-items'), page = document.querySelector('.customizer')
-  const about = document.querySelector('.customizer-about').getBoundingClientRect().left, row = [...document.querySelectorAll('.customizer .setting-item')].find(r => r.textContent.includes('Live sample')).getBoundingClientRect().left
-  const main = document.querySelector('.customizer details.cz-main > summary').getBoundingClientRect().left
-  return { items: c(items), page: c(page), about, row, main }`)
-check('settings card has no background of its own', bg.items === 'rgba(0, 0, 0, 0)', `${bg.items} on ${bg.page}`)
-check('rows, About block and group headers line up', Math.abs(bg.about - bg.row) < 2 && Math.abs(bg.about - bg.main) < 2, `${bg.about} ${bg.row} ${bg.main}`)
+// --- 1. (M16 replaced the plain background with cards; m16.mjs checks them) the group headers still line up with the rows inside
+const bg = await s.ev(`const l = e => e.getBoundingClientRect().left
+  return { row: l([...document.querySelectorAll('.customizer .setting-item')].find(r => r.textContent.includes('Live sample'))), main: l(document.querySelector('.customizer details.cz-main > summary')) }`)
+check('top rows and group headers line up', Math.abs(bg.row - bg.main) < 12, `${bg.row} ${bg.main}`)
 await s.shot('m15-settings-bg')
 
 // --- 2. ticked checkbox under a real mouse, both views

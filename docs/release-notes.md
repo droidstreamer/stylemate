@@ -2,6 +2,12 @@
 
 Newest first.
 
+## 1.0.3
+- **Settings in cards:** the About block sits in its own card, like FolderMate's. The top settings (sample note, Enable, colors, reset, export, presets) are each a card inside one larger card, and each group (Page, Text & links, Headings, Lists, Quotes & rules, Editor, Print & PDF) is one larger card with its settings and boxes as cards inside. Groups still fold open and closed.
+- **Reset buttons** sit on the card they reset instead of a card of their own.
+- **No divider lines:** the two lines under the coffee button are gone.
+- **No ribbon button:** the paintbrush button in the left ribbon is gone. Open the sample note from Preferences or the command palette ("StyleMate: Open sample note").
+
 ## 1.0.2
 - **Settings background:** StyleMate's settings page is back on Obsidian's normal settings background. Since 1.0.1 the rows sat on a lighter card while the header and group titles did not.
 - **Checkbox hover color:** a ticked checkbox no longer changes to the theme's color when you point at it or click it. It keeps your Ticked fill, and the new "Ticked fill, on hover" (Lists > Checkbox lists > Color) can give it its own color.

@@ -1,7 +1,7 @@
 {
   "id": "stylemate",
   "name": "StyleMate",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "minAppVersion": "1.13.0",
   "description": "Style headings, text, lists, checkboxes and callouts with sliders and color pickers, and watch a sample note change live.",
   "author": "Droid",

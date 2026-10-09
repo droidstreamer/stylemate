@@ -8,4 +8,5 @@ if (existsSync(target)) {
   process.exit(1)
 }
 cpSync('dist', target, { recursive: true })
+cpSync('docs/release-notes.md', `${target}/release-notes.md`) // every build folder carries its notes (1.0.2 shipped without them)
 console.log(`ship: ${target}/ (install by copying it to <vault>/.obsidian/plugins/stylemate/)`)

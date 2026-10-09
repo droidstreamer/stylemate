@@ -1,5 +1,5 @@
-.customizer .customizer-group { border-top: 1px solid var(--background-modifier-border); padding: 0.3em 0; }
-.customizer .customizer-group .customizer-group { margin: 0.5em 0 0.5em 0.5em; padding: 0.3em 0.8em; border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); background: var(--background-secondary); }
+.customizer .customizer-group { padding: 0.3em 0; }
+.customizer .customizer-group .customizer-group { margin: 6px 0; padding: 0.3em 0.8em; border-radius: var(--radius-m); background: var(--background-modifier-hover); }
 .customizer summary { cursor: pointer; font-weight: var(--font-semibold); padding: 0.4em 0; }
 .customizer .customizer-changed { border-left: 3px solid var(--interactive-accent); padding-left: 0.6em; }
 
@@ -27,7 +27,6 @@ input.cz-track.cz-track::-webkit-slider-thumb { box-sizing: border-box; cursor: 
 .cz-color .cz-reset:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
 
 /* Preferences: About block (same layout as LevelMate, FolderMate and MindmapMate). */
-.customizer-about { margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--background-modifier-border); }
 .customizer-about-name { font-size: var(--font-ui-large); font-weight: var(--font-bold); color: var(--text-normal); }
 .customizer-about-title { color: var(--text-faint); font-size: var(--font-ui-smaller); }
 .customizer-about p { margin: 6px 0 10px; color: var(--text-muted); }
@@ -64,7 +63,19 @@ input.cz-track.cz-track::-webkit-slider-thumb { box-sizing: border-box; cursor: 
 .customizer details.cz-main > summary { text-transform: uppercase; letter-spacing: 0.04em; }
 .customizer .setting-item-control > .slider-value { display: none; } /* the number box replaces it (it would show the slider's clamped value) */
 
-/* Declarative settings (Obsidian 1.13) put every row on a card with its own background; StyleMate's page stays on the plain settings background, rows edge to edge as before 1.0.1. */
-.customizer { --setting-items-background: transparent; --setting-items-padding-x: 0; --setting-items-radius: 0; }
 /* Declarative settings: the About block, Presets and each main group are `render` rows; drop the row's own flex layout and padding. */
 .customizer .setting-item.cz-host { display: block; padding: 0; border: none; background: none; }
+
+/* Cards (Obsidian's own group card, as in FolderMate): About alone in one; the top settings and each main group in a larger card,
+   their rows and boxes as smaller cards inside it. A card inside a card is a see-through hover tint, so each level is a step lighter
+   (dark) or darker (light) in any theme. No divider lines. */
+.customizer .cz-cards > .setting-items { padding: 8px; }
+.customizer .cz-cards .setting-item:not(.cz-host) { margin: 6px 0; padding: 12px 16px; border: none; border-radius: var(--radius-m); background: var(--background-modifier-hover); }
+.customizer .cz-cards .setting-item::before, .customizer .cz-about-group .setting-item::before { content: none; }
+.customizer .cz-cards > .setting-items > .setting-item:not(.cz-host):first-child { margin-top: 0; }
+.customizer .cz-cards > .setting-items > .setting-item:last-child, .customizer .cz-host > .setting-item:last-child { margin-bottom: 0; }
+.customizer details.cz-main { padding: 0 8px; }
+/* Reset buttons sit on the card they reset, not on a card of their own. */
+.customizer .cz-cards .setting-item.cz-reset-row { background: none; padding: 6px 8px; }
+/* About card: the same inner space as FolderMate's. */
+.customizer .cz-about-group .setting-item.cz-host { padding: 20px 30px; }
