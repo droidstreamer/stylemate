@@ -33,7 +33,7 @@ const select = (group: string, id: string, label: string, v: string, options: st
 const text = (group: string, id: string, label: string, v: string[], o: Opt = {}): Def => ({ group, id, label, kind: 'text', vars: v, ...o })
 const NOTES = '.markdown-source-view.mod-cm6, .markdown-preview-view'
 
-export const GROUPS = ['Page', 'Text & links', 'Headings', 'Lists', 'Quotes & rules', 'Editor'] as const
+export const GROUPS = ['Page', 'Text & links', 'Headings', 'Lists', 'Quotes & rules', 'Editor', 'Print & PDF'] as const
 
 const P = 'Page', T = 'Text & links', H = 'Headings', L = 'Lists', Q = 'Quotes & rules', E = 'Editor'
 const MD = '.markdown-source-view.mod-cm6 .cm-content, .markdown-preview-view'
@@ -178,7 +178,9 @@ export const DEFS: Def[] = [
   ...[1, 2, 3, 4, 5, 6].map(k => stepDef(INDENT_TYPES[1], k)),
   ...spaces(INDENT_TYPES[1]),
   // Checkbox lists
-  color(L, 'cb-color', 'Ticked fill', '--checkbox-color', { sub: 'Checkbox lists', sec: 'Color' }),
+  // Obsidian fills a ticked box with --checkbox-color-hover under the mouse (and while clicking): Ticked fill sets both, so hover matches until set.
+  { group: L, sub: 'Checkbox lists', sec: 'Color', id: 'cb-color', label: 'Ticked fill', kind: 'color', vars: ['--checkbox-color', '--checkbox-color-hover'] },
+  color(L, 'cb-hover', 'Ticked fill, on hover', '--checkbox-color-hover', { sub: 'Checkbox lists', sec: 'Color', follows: 'cb-color' }),
   color(L, 'cb-border', 'Empty box border', '--checkbox-border-color', { sub: 'Checkbox lists', sec: 'Color' }),
   color(L, 'cb-marker', 'Tick mark', '--checkbox-marker-color', { sub: 'Checkbox lists', sec: 'Color' }),
   num(L, 'cb-size', 'Size', '--checkbox-size', 'px', 10, 32, 1, { sub: 'Checkbox lists', sec: 'Shape' }),
@@ -212,6 +214,8 @@ export const DEFS: Def[] = [
   color(E, 'caret', 'Cursor color', '--caret-color'),
   { group: E, id: 'active-line', label: 'Highlight the cursor line', kind: 'color', fallback: '#4a8fc0',
     rule: v => [['.cm-active.cm-line', `background-color:color-mix(in srgb,${v} 15%,transparent) !important`]] },
+  // Print & PDF: css.ts adds the black-and-white print rules when this is on.
+  { group: 'Print & PDF', id: 'print-bw', label: 'Black and white when printing', kind: 'toggle', fallback: 'no', rule: () => [] },
 ]
 
 // Description and icon for every other setting (headings, gaps and indent steps carry their own).
@@ -250,6 +254,7 @@ const TIPS: Record<string, [icon: string, tip: string]> = {
   'bullet-size': ['circle', 'Size of the bullet dot.'],
   'bullet-radius': ['square', 'Bullet shape: 50 = round, 0 = square.'],
   'cb-color': ['square-check', 'Fill color of a ticked checkbox.'],
+  'cb-hover': ['mouse-pointer', 'Fill color of a ticked checkbox while the mouse is over it or you click it.'],
   'cb-border': ['square', 'Outline color of an empty checkbox.'],
   'cb-marker': ['check', 'Color of the tick mark inside a ticked checkbox.'],
   'cb-size': ['a-large-small', 'Size of the checkbox.'],
@@ -263,6 +268,7 @@ const TIPS: Record<string, [icon: string, tip: string]> = {
   'hr-color': ['minus', 'Color of the --- divider line.'],
   'hr-thick': ['minus', 'Thickness of the --- divider line.'],
   'caret': ['text-cursor', 'Color of the blinking text cursor.'],
+  'print-bw': ['printer', 'Prints and exports to PDF in black, white and grays: text, headings (black to gray), links (underlined), code, quotes, callouts, tags and images. The screen does not change.'],
   'active-line': ['highlighter', 'Faint highlight behind the line the cursor is on.'],
 }
 for (const d of DEFS) { const t = TIPS[d.id]; if (t) { d.icon ??= t[0]; d.tip ??= t[1] } }

@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting, setIcon, setTooltip, type SettingDefinitionItem, type SliderComponent, type TextComponent, type DropdownComponent } from 'obsidian'
+import { App, PluginSettingTab, Setting, setIcon, setTooltip, type SettingDefinitionItem, type SliderComponent, type TextComponent, type DropdownComponent, type ToggleComponent } from 'obsidian'
 import { addColorPicker, addTrackSlider } from './colorPicker'
 import { COFFEE_BUTTON, COFFEE_URL } from './coffeeButton'
 import { DEFS, GROUPS, type Def } from './core/schema'
@@ -291,6 +291,11 @@ export class StyleMateTab extends PluginSettingTab {
         s.addText(x => { c = x.setPlaceholder(d.fallback ?? '').onChange(change) })
         if (d.fonts) void this.fontList(s.controlEl).then(id => c.inputEl.setAttr('list', id))
         return (v: string) => { c.setValue(plugin.has(d) ? v : '') }
+      }
+      if (d.kind === 'toggle' && !strip) { // a row of its own: Obsidian's switch
+        let t!: ToggleComponent
+        s.addToggle(x => { t = x.onChange(v => change(v ? 'yes' : 'no')) })
+        return (v: string) => { t.setValue(v === 'yes') }
       }
       if (d.kind === 'toggle') {
         const b = s.controlEl.createEl('button', { cls: 'cz-toggle', attr: { 'aria-label': d.label } })

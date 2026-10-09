@@ -7,7 +7,7 @@ const s = await openSettings()
 await s.ev(`document.querySelectorAll('.customizer details').forEach(d => d.open = true); return 1`); await sleep(300)
 
 check('main headers are capitals', await s.ev(`return [...document.querySelectorAll('.customizer details.cz-main > summary')].every(e => getComputedStyle(e).textTransform === 'uppercase')`))
-check('six main headers', await s.ev(`return document.querySelectorAll('.customizer details.cz-main').length`) === 6)
+check('seven main headers', await s.ev(`return document.querySelectorAll('.customizer details.cz-main').length`) === 7)
 check('sub boxes stay as typed', await s.ev(`return [...document.querySelectorAll('.customizer details:not(.cz-main) > summary')].every(e => getComputedStyle(e).textTransform === 'none')`))
 check('every slider has a number box', await s.ev(`return document.querySelectorAll('.customizer input[type=range].cz-track').length >= 0 && [...document.querySelectorAll('.customizer .setting-item')].filter(r => r.querySelector('input[type=range]:not(.cz-track)')).every(r => r.querySelector('input.cz-num'))`))
 

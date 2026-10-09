@@ -64,5 +64,7 @@ input.cz-track.cz-track::-webkit-slider-thumb { box-sizing: border-box; cursor: 
 .customizer details.cz-main > summary { text-transform: uppercase; letter-spacing: 0.04em; }
 .customizer .setting-item-control > .slider-value { display: none; } /* the number box replaces it (it would show the slider's clamped value) */
 
+/* Declarative settings (Obsidian 1.13) put every row on a card with its own background; StyleMate's page stays on the plain settings background, rows edge to edge as before 1.0.1. */
+.customizer { --setting-items-background: transparent; --setting-items-padding-x: 0; --setting-items-radius: 0; }
 /* Declarative settings: the About block, Presets and each main group are `render` rows; drop the row's own flex layout and padding. */
 .customizer .setting-item.cz-host { display: block; padding: 0; border: none; background: none; }

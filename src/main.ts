@@ -19,6 +19,17 @@ export default class StyleMate extends Plugin {
     // ponytail: main window only; add popout windows if anyone asks (workspace 'window-open').
     document.adoptedStyleSheets = [...document.adoptedStyleSheets, this.sheet]
     this.apply()
+    // File > Export to PDF prints from a hidden window it opens with window.open, and copies only <style> and <link> sheets into it:
+    // hand that window a copy of StyleMate's sheet too, so the PDF (and Black and white when printing) gets StyleMate's look.
+    const open = window.open.bind(window)
+    window.open = (...args: Parameters<Window['open']>) => {
+      const w = open(...args)
+      try {
+        if (w) { const sh = new (w as unknown as { CSSStyleSheet: typeof CSSStyleSheet }).CSSStyleSheet(); sh.replaceSync(this.css); w.document.adoptedStyleSheets = [...w.document.adoptedStyleSheets, sh] }
+      } catch { /* another origin */ }
+      return w
+    }
+    this.register(() => { window.open = open })
     this.registerEditorExtension(otherLinks)
     this.addSettingTab(new StyleMateTab(this.app, this))
     this.addRibbonIcon('paintbrush', 'StyleMate: open sample note', () => void openPreview(this.app))

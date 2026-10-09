@@ -4,7 +4,7 @@ import { check, done, ev, openSettings, sleep } from './drive.mjs'
 
 console.log('StyleMate', await ev(`return app.plugins.plugins.stylemate.manifest.version`))
 const s = await openSettings()
-check('every main group is drawn', await s.ev(`return [...document.querySelectorAll('.customizer details.cz-main > summary')].map(x => x.textContent).join('|')`) === 'Page|Text & links|Headings|Lists|Quotes & rules|Editor')
+check('every main group is drawn', await s.ev(`return [...document.querySelectorAll('.customizer details.cz-main > summary')].map(x => x.textContent).join('|')`) === 'Page|Text & links|Headings|Lists|Quotes & rules|Editor|Print & PDF')
 const search = async q => {
   await s.ev(`const i = document.querySelector('.vertical-tab-header input[type=search], .vertical-tab-header input'); i.focus(); i.value = ${JSON.stringify(q)}; i.dispatchEvent(new Event('input', { bubbles: true })); return 1`)
   await sleep(600)

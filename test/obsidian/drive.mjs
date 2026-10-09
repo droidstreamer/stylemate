@@ -9,7 +9,7 @@ import { resolve } from 'node:path'
 export const PORT = Number(process.env.PORT ?? 9336), VAULT = resolve(process.env.VAULT ?? '../test-vault'), profile = `${tmpdir()}/stylemate-obsidian-profile-${PORT}`, SHOTS = process.env.SHOTS ?? tmpdir()
 export const sleep = ms => new Promise(r => setTimeout(r, ms))
 const targets = async () => (await (await fetch(`http://127.0.0.1:${PORT}/json`)).json()).filter(t => t.type === 'page')
-const mainTarget = async () => (await targets()).find(t => !t.title.startsWith('Settings'))
+const mainTarget = async () => (await targets()).find(t => t.title && !t.title.startsWith('Settings')) // untitled: a hidden Export to PDF window
 try { if (!(await mainTarget())) throw 0 } catch {
   mkdirSync(profile, { recursive: true })
   writeFileSync(`${profile}/obsidian.json`, JSON.stringify({ vaults: { customizertest01: { path: VAULT, ts: 1, open: true } }, updateDisabled: true }))

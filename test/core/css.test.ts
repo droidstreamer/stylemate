@@ -98,3 +98,21 @@ describe('M8: descriptions, icons, list groups', () => {
     expect(css).toContain('body.theme-dark .callout-content{color:#888888 !important}')
   })
 })
+
+describe('print and checkbox hover', () => {
+  it('black and white only when on, and only for print', () => {
+    expect(buildCss({ 'print-bw': 'no' })).toBe('')
+    const lines = buildCss({ 'print-bw': 'yes' }).split('\n')
+    expect(lines.length).toBeGreaterThan(10)
+    expect(lines.every(l => l.startsWith('@media print{html body .print'))).toBe(true)
+  })
+  it('exports the print rules as a readable @media block', () => {
+    const css = exportCss({ 'print-bw': 'yes' })
+    expect(css).toContain('@media print {\n  html body .print .markdown-preview-view h1 {\n    color:hsl(0,0%,5%) !important;\n  }\n}')
+  })
+  it('Ticked fill sets the hover fill too; its own hover setting wins', () => {
+    expect(buildCss({ 'cb-color@dark': '#cc3366' })).toBe('body.theme-dark{--checkbox-color:#cc3366 !important;--checkbox-color-hover:#cc3366 !important}')
+    const css = buildCss({ 'cb-color@dark': '#cc3366', 'cb-hover@dark': '#3366cc' })
+    expect(css.indexOf('--checkbox-color-hover:#3366cc')).toBeGreaterThan(css.indexOf('--checkbox-color-hover:#cc3366'))
+  })
+})

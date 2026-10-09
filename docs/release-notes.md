@@ -2,6 +2,12 @@
 
 Newest first.
 
+## 1.0.2
+- **Settings background:** StyleMate's settings page is back on Obsidian's normal settings background. Since 1.0.1 the rows sat on a lighter card while the header and group titles did not.
+- **Checkbox hover color:** a ticked checkbox no longer changes to the theme's color when you point at it or click it. It keeps your Ticked fill, and the new "Ticked fill, on hover" (Lists > Checkbox lists > Color) can give it its own color.
+- **Black and white printing:** new PRINT & PDF group with one switch, "Black and white when printing". When it is on, File > Export to PDF and printing come out in black, white and grays: dark text, headings from black (H1) to gray (H6), underlined links, light gray code, quote and callout boxes, tags and images in gray. What you see on screen does not change.
+- **StyleMate in PDFs:** Export to PDF now uses your StyleMate settings (the light theme's colors, since Obsidian always exports in light). Before, PDFs ignored StyleMate.
+
 ## 1.0.1
 First public release, for the Obsidian community directory.
 - **New plugin ID:** `stylemate` (was `customizer`). To keep your settings from an earlier test build, rename `.obsidian/plugins/customizer` to `stylemate` in your vault before installing.
