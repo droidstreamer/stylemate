@@ -2,6 +2,12 @@
 
 Newest first.
 
+## 1.1.0
+- **PDF mode replaces PRINT & PDF:** the PRINT & PDF group and its switch are gone from Preferences. In its place is one command, **Toggle PDF mode (black and white)**, with no default key: bind it in Settings > Hotkeys (search "StyleMate"), or run it from the command palette. While it is on, the note you are looking at turns black, white and gray on screen (headings from near-black H1 to mid-gray H6, underlined links, gray code, quotes and callouts, grayscale images), and File > Export to PDF uses that look. Toggle it off and the normal look returns.
+- **Nothing cut off:** PDF mode ignores your heading "Shift left/right" values and your list indent settings, so headings pulled into the margin or deep indents are not clipped on the page. Your saved settings are untouched.
+- **Reminder and reset:** a "PDF mode" label shows in the status bar while it is on. The mode is never saved, so Obsidian always starts in the normal look.
+- Old "Black and white when printing" setting is cleaned out of saved settings and presets.
+
 ## 1.0.3
 - **Settings in cards:** the About block sits in its own card, like FolderMate's. The top settings (sample note, Enable, colors, reset, export, presets) are each a card inside one larger card, and each group (Page, Text & links, Headings, Lists, Quotes & rules, Editor, Print & PDF) is one larger card with its settings and boxes as cards inside. Groups still fold open and closed.
 - **Reset buttons** sit on the card they reset instead of a card of their own.

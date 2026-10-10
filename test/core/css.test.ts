@@ -99,16 +99,25 @@ describe('M8: descriptions, icons, list groups', () => {
   })
 })
 
-describe('print and checkbox hover', () => {
-  it('black and white only when on, and only for print', () => {
-    expect(buildCss({ 'print-bw': 'no' })).toBe('')
-    const lines = buildCss({ 'print-bw': 'yes' }).split('\n')
+describe('PDF mode and checkbox hover', () => {
+  it('PDF mode adds black-and-white rules only when asked, on screen (no @media)', () => {
+    expect(buildCss({})).toBe('')
+    const lines = buildCss({}, undefined, 16, true).split('\n')
     expect(lines.length).toBeGreaterThan(10)
-    expect(lines.every(l => l.startsWith('@media print{html body .print'))).toBe(true)
+    expect(lines.every(l => l.startsWith('html body') && !l.includes('@media'))).toBe(true)
+    expect(lines.join('\n')).toContain('h1, html body :is(.markdown-preview-view,.markdown-source-view) .HyperMD-header-1')
   })
-  it('exports the print rules as a readable @media block', () => {
-    const css = exportCss({ 'print-bw': 'yes' })
-    expect(css).toContain('@media print {\n  html body .print .markdown-preview-view h1 {\n    color:hsl(0,0%,5%) !important;\n  }\n}')
+  it('PDF mode drops side shifts and indent steps so nothing is cut off, keeps other settings', () => {
+    const v = { 'h1-shift': -60, 'h3-shift': 40, 'list-indent': 3, 'bstep-1': 20, 'line-width': 700 }
+    const normal = buildCss(v)
+    expect(normal).toContain('-60px')
+    expect(normal).toContain('--cz-bstep-1')
+    const pdf = buildCss(v, undefined, 16, true)
+    expect(pdf).not.toMatch(/-60px|40px|--list-indent|--cz-bstep-1/)
+    expect(pdf).toContain('700')
+  })
+  it('exports no print rules', () => {
+    expect(exportCss({ 'font-size': 18 })).not.toContain('@media')
   })
   it('Ticked fill sets the hover fill too; its own hover setting wins', () => {
     expect(buildCss({ 'cb-color@dark': '#cc3366' })).toBe('body.theme-dark{--checkbox-color:#cc3366 !important;--checkbox-color-hover:#cc3366 !important}')

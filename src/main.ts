@@ -11,16 +11,19 @@ export default class StyleMate extends Plugin {
   settings: Settings = { enabled: true, bothThemes: false, values: {}, presets: {} }
   sheet = new CSSStyleSheet()
   css = '' // the generated CSS, as last applied
+  pdfMode = false // black-and-white look for Export to PDF; never saved, so Obsidian always starts in the normal look
+  pdfBar!: HTMLElement
 
   async onload() {
     this.settings = { ...this.settings, ...((await this.loadData()) as Partial<Settings> | null) }
     delete (this.settings as { visited?: unknown }).visited // visited links were removed in 0.10
+    for (const v of [this.settings.values, ...Object.values(this.settings.presets)]) delete v['print-bw'] // the Print & PDF switch became the PDF mode command in 1.1.0
     // A constructed stylesheet, not a <style> element (the community review forbids those). It sits after every theme and snippet sheet.
     // ponytail: main window only; add popout windows if anyone asks (workspace 'window-open').
     document.adoptedStyleSheets = [...document.adoptedStyleSheets, this.sheet]
     this.apply()
     // File > Export to PDF prints from a hidden window it opens with window.open, and copies only <style> and <link> sheets into it:
-    // hand that window a copy of StyleMate's sheet too, so the PDF (and Black and white when printing) gets StyleMate's look.
+    // hand that window a copy of StyleMate's sheet too, so the PDF gets StyleMate's look (and PDF mode's black and white).
     const open = window.open.bind(window)
     window.open = (...args: Parameters<Window['open']>) => {
       const w = open(...args)
@@ -33,13 +36,20 @@ export default class StyleMate extends Plugin {
     this.registerEditorExtension(otherLinks)
     this.addSettingTab(new StyleMateTab(this.app, this))
     this.addCommand({ id: 'open-preview', name: 'Open sample note', callback: () => void openPreview(this.app) })
+    this.pdfBar = this.addStatusBarItem(); this.pdfBar.setText('PDF mode'); this.pdfBar.hide()
+    // No default hotkey: bind it in Settings > Hotkeys. Turn it on, Export to PDF, turn it off.
+    this.addCommand({ id: 'pdf-mode', name: 'Toggle PDF mode (black and white)', callback: () => { this.pdfMode = !this.pdfMode; this.apply(); new Notice(this.pdfMode ? 'PDF mode on: black and white, no side shifts. Export to PDF, then toggle it off.' : 'PDF mode off.') } })
     this.addCommand({ id: 'toggle', name: 'Turn customizations on/off', callback: () => { this.settings.enabled = !this.settings.enabled; this.apply(); this.save() } })
   }
 
   onunload() { document.adoptedStyleSheets = document.adoptedStyleSheets.filter(s => s !== this.sheet) }
 
   save = debounce(() => void this.saveData(this.settings), 400, true)
-  apply() { this.sheet.replaceSync(this.css = this.settings.enabled ? buildCss(this.settings.values, undefined, parseFloat(document.body.style.getPropertyValue('--font-text-size')) || 16) : '') }
+  apply() {
+    const base = parseFloat(document.body.style.getPropertyValue('--font-text-size')) || 16
+    this.sheet.replaceSync(this.css = this.settings.enabled || this.pdfMode ? buildCss(this.settings.enabled ? this.settings.values : {}, undefined, base, this.pdfMode) : '')
+    this.pdfBar?.toggle(this.pdfMode)
+  }
 
   theme = (): Theme => (document.body.classList.contains('theme-dark') ? 'dark' : 'light')
   has = (d: Def) => (d.kind === 'color' ? (['light', 'dark'] as const).some(t => this.settings.values[vkey(d, t)] !== undefined) : this.settings.values[d.id] !== undefined)

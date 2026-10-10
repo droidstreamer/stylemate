@@ -1,4 +1,4 @@
-// M15 live checks: plain settings background, checkbox ticked hover color (real mouse, both views), black and white print (real Export to PDF).
+// M15 live checks: plain settings background, checkbox ticked hover color (real mouse, both views), PDF mode (real Export to PDF).
 // `npm run build` first, then `node test/obsidian/m15.mjs`. Needs pdftoppm and python3 with PIL.
 import { execFileSync } from 'node:child_process'
 import { existsSync, rmSync } from 'node:fs'
@@ -50,11 +50,12 @@ for (const [name, mode] of [['Reading view', 'preview'], ['Live Preview', 'sourc
 await s.ev(`__reset(${JSON.stringify(path)}, 'Ticked fill, on hover'); return 1`)
 check('reset: hover follows Ticked fill again', !(await ev(`return 'cb-hover@dark' in app.plugins.plugins.stylemate.settings.values || 'cb-hover@light' in app.plugins.plugins.stylemate.settings.values`)))
 
-// --- 3. black and white print: the switch, the screen unchanged, a real Export to PDF
-const sw = await s.ev(`const r = __row(['Print & PDF'], 'Black and white when printing'); r.scrollIntoView({ block: 'center' }); return !!r.querySelector('.checkbox-container')`)
-check('Print & PDF group has the switch', sw)
+// --- 3. PDF mode (1.1.0): the command, the screen goes black and white, side shifts dropped, a real Export to PDF
+check('PDF mode command exists, no default hotkey', await ev(`const c = app.commands.commands['stylemate:pdf-mode']; return !!c && !(c.hotkeys?.length)`))
+check('Preferences has no Print & PDF group any more', !(await s.ev(`return [...document.querySelectorAll('.customizer details.cz-main > summary')].some(x => x.textContent.includes('Print'))`)))
 // colorful settings, so the PDF shows whether StyleMate reaches it and whether black and white wins over them
 await s.ev(`__color(['Headings', 'H1'], 'Color', '#ff0000'); __color(['Text & links', 'Links'], 'Note link', '#00aa00'); __color(['Quotes & rules', 'Callouts'], 'Background', '#2244ff'); return 1`)
+await ev(`const p = app.plugins.plugins.stylemate; p.settings.values['h1-shift'] = -60; p.apply(); return 1`)
 const pdf = async name => {
   const file = `${SHOTS}/${name}.pdf`; rmSync(file, { force: true })
   await call('Page.bringToFront')
@@ -76,15 +77,20 @@ for f in glob.glob(${JSON.stringify(`${SHOTS}/${name}-*.png`)}):
 print(m)`]).toString())
 }
 const colorful = await pdf('m15-color')
-check('PDF export carries StyleMate colors (switch off)', colorful > 100, `max color spread ${colorful}`)
-const screenBefore = await ev(`return [...document.querySelectorAll('.markdown-preview-view, .markdown-preview-view *')].slice(0, 400).map(e => getComputedStyle(e).color + getComputedStyle(e).backgroundColor).join()`)
-await s.ev(`__row(['Print & PDF'], 'Black and white when printing').querySelector('.checkbox-container').click(); return 1`); await sleep(400)
-check('switch stores yes', await ev(`return app.plugins.plugins.stylemate.settings.values['print-bw']`) === 'yes')
-const screenAfter = await ev(`return [...document.querySelectorAll('.markdown-preview-view, .markdown-preview-view *')].slice(0, 400).map(e => getComputedStyle(e).color + getComputedStyle(e).backgroundColor).join()`)
-check('screen does not change', screenBefore === screenAfter && screenBefore.length > 100)
+check('PDF export carries StyleMate colors (mode off)', colorful > 100, `max color spread ${colorful}`)
+const spread = () => ev(`const h = document.querySelector('.workspace-leaf-content[data-type=markdown] :is(h1, .cm-header-1)'); if (!h) return -1
+  const c = getComputedStyle(h).color.match(/\\d+/g).map(Number); return Math.max(...c) - Math.min(...c)`)
+const before = await spread()
+await ev(`await app.commands.executeCommandById('stylemate:pdf-mode'); return 1`); await sleep(400)
+check('mode on: status bar label shows', await ev(`return [...document.querySelectorAll('.status-bar-item')].some(e => e.textContent === 'PDF mode' && e.offsetParent)`))
+check('mode on: the note on screen turns gray (H1 was red)', before > 100 && (await spread()) < 12, `${before} -> ${await spread()}`)
+check('mode on: side shifts and indent settings dropped from the sheet', await ev(`const c = app.plugins.plugins.stylemate.css; return !c.includes('-60px') && c.includes('hsl(0,0%,5%)')`))
+check('mode is not saved', await ev(`return !JSON.stringify(app.plugins.plugins.stylemate.settings).includes('pdf')`))
+await shot('m15-pdf-mode')
 const gray = await pdf('m15-bw')
-check('PDF export is black and white (switch on)', gray < 12, `max color spread ${gray}`)
-check('print rules only inside @media print', await ev(`const c = app.plugins.plugins.stylemate.css; return c.includes('@media print{html body .print') && !/^html body .print/m.test(c)`))
+check('PDF export is black and white (mode on)', gray < 12, `max color spread ${gray}`)
+await ev(`await app.commands.executeCommandById('stylemate:pdf-mode'); return 1`); await sleep(400)
+check('mode off: colors and shift come back, label gone', (await spread()) > 100 && await ev(`return app.plugins.plugins.stylemate.css.includes('-60px') && ![...document.querySelectorAll('.status-bar-item')].some(e => e.textContent === 'PDF mode' && e.offsetParent)`))
 await ev(`const d = window.electron.remote.dialog; d.showSaveDialog = d.__orig; const ipc = window.electron.ipcRenderer; ipc.send = ipc.__send; const p = app.plugins.plugins.stylemate; p.settings.values = {}; p.apply(); return 1`)
 await shot('m15-notes')
 done()

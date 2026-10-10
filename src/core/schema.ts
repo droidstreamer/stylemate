@@ -33,7 +33,7 @@ const select = (group: string, id: string, label: string, v: string, options: st
 const text = (group: string, id: string, label: string, v: string[], o: Opt = {}): Def => ({ group, id, label, kind: 'text', vars: v, ...o })
 const NOTES = '.markdown-source-view.mod-cm6, .markdown-preview-view'
 
-export const GROUPS = ['Page', 'Text & links', 'Headings', 'Lists', 'Quotes & rules', 'Editor', 'Print & PDF'] as const
+export const GROUPS = ['Page', 'Text & links', 'Headings', 'Lists', 'Quotes & rules', 'Editor'] as const
 
 const P = 'Page', T = 'Text & links', H = 'Headings', L = 'Lists', Q = 'Quotes & rules', E = 'Editor'
 const MD = '.markdown-source-view.mod-cm6 .cm-content, .markdown-preview-view'
@@ -214,8 +214,6 @@ export const DEFS: Def[] = [
   color(E, 'caret', 'Cursor color', '--caret-color'),
   { group: E, id: 'active-line', label: 'Highlight the cursor line', kind: 'color', fallback: '#4a8fc0',
     rule: v => [['.cm-active.cm-line', `background-color:color-mix(in srgb,${v} 15%,transparent) !important`]] },
-  // Print & PDF: css.ts adds the black-and-white print rules when this is on.
-  { group: 'Print & PDF', id: 'print-bw', label: 'Black and white when printing', kind: 'toggle', fallback: 'no', rule: () => [] },
 ]
 
 // Description and icon for every other setting (headings, gaps and indent steps carry their own).
@@ -268,7 +266,6 @@ const TIPS: Record<string, [icon: string, tip: string]> = {
   'hr-color': ['minus', 'Color of the --- divider line.'],
   'hr-thick': ['minus', 'Thickness of the --- divider line.'],
   'caret': ['text-cursor', 'Color of the blinking text cursor.'],
-  'print-bw': ['printer', 'Prints and exports to PDF in black, white and grays: text, headings (black to gray), links (underlined), code, quotes, callouts, tags and images. The screen does not change.'],
   'active-line': ['highlighter', 'Faint highlight behind the line the cursor is on.'],
 }
 for (const d of DEFS) { const t = TIPS[d.id]; if (t) { d.icon ??= t[0]; d.tip ??= t[1] } }
