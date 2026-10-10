@@ -17,6 +17,8 @@ Changing Obsidian's look usually means writing CSS snippets and reloading to see
 - **Lists your way.** Bullet, numbered and checkbox lists each get their own indent per level, spacing and marker color; bullets and checkboxes also get size and roundness.
 - **Text, quotes and callouts.** Note font, text size, line width, link and tag colors, quote bars, and callout background, title, icon and text colors.
 - **Light and dark.** Each theme keeps its own colors.
+- **Black and white for PDFs.** One command, *Toggle PDF mode*, turns the note black, white and gray, and Export to PDF prints it that way. Heading shifts and deep indents are set aside while it is on, so nothing gets cut off at the page edge. Toggle it again and your colors come back.
+- **Your look in your PDFs.** Export to PDF uses your StyleMate settings, not Obsidian's defaults.
 - **Presets and snippets.** Save looks as presets, or export your look as a CSS snippet to share.
 - **Searchable settings.** Obsidian's settings search finds any StyleMate option.
 
@@ -34,6 +36,7 @@ Changing Obsidian's look usually means writing CSS snippets and reloading to see
 2. Open **Settings > StyleMate** and press **Open sample note**.
 3. Open a group (Page, Text & links, Headings, Lists, Quotes & rules, Editor) and move any slider. Every row has a reset arrow, and **Reset all** puts Obsidian back as it was.
 4. To keep a look, save it as a preset or press **Save snippet**.
+5. For a black-and-white PDF, open **Settings > Hotkeys**, search for "StyleMate" and give *Toggle PDF mode (black and white)* a key (or run it from the command palette). Press it, use **File > Export to PDF**, then press it again. The status bar says *PDF mode* while it is on.
 
 StyleMate sits on top of your theme. If a theme or snippet styles the same thing, StyleMate's setting wins while it is on.
 
